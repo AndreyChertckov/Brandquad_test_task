@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  brandquad_test_task:
+    image: brandquad_test_task
+    build: .
+    ports:
+      - 8080:8080
