@@ -2,7 +2,7 @@
 
 echo "Migrations"
 python manage.py makemigrations apache_log
-python manage.py migrate apache_log
+python manage.py migrate
 
 echo "Load apache log"
 python manage.py load_log http://www.almhuette-raith.at/apache-log/access.log

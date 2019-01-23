@@ -19,5 +19,6 @@ from apache_log import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('get_page/', views.get_page)
+    path('get_page/', views.get_page),
+    path('get_info/', views.get_info)
 ]

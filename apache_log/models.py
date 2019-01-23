@@ -8,4 +8,4 @@ class Log(models.Model):
     http_method = models.CharField(max_length=7)
     uri = models.CharField(max_length=500)
     status_code = models.CharField(max_length=3)
-    size_of_response = models.IntegerField()
+    response_size = models.IntegerField()

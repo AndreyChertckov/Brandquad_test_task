@@ -37,9 +37,9 @@ class Command(BaseCommand):
                 for line in lines:
                     if line:
                         r = re.match(r'([(\d\.)]+) - - \[(.*?)\] "(\w+) (.*) .*" (\d+) ([0-9\-]*)',line)
-                        log_dict = dict(zip(['ip','date','http_method','uri','status_code','size_of_response'],r.groups()))
+                        log_dict = dict(zip(['ip','date','http_method','uri','status_code','response_size'],r.groups()))
                         log_dict['date'] = datetime.strptime(log_dict['date'], '%d/%b/%Y:%H:%M:%S %z')
-                        log_dict['size_of_response'] = 0 if log_dict['size_of_response'] == '-' else int(log_dict['size_of_response'])
+                        log_dict['response_size'] = 0 if log_dict['response_size'] == '-' else int(log_dict['response_size'])
                         log_object = Log(**log_dict)
                         logs_objects += [log_object]
                 num_lines += len(lines)
