@@ -9,6 +9,20 @@ from .models import Log
 def get_page(request):
 
     logs = Log.objects.all()
+
+    if 'ip' in request.GET:
+        logs = logs.filter(ip = request.GET.get('ip'))
+    if 'http_method' in request.GET:
+        logs = logs.filter(http_method = request.GET.get('http_method'))
+    if 'date' in request.GET:
+        logs = logs.filter(date = request.GET.get('date'))
+    if 'uri' in request.GET:
+        logs = logs.filter(uri = request.GET.get('uri'))
+    if 'status_code' in request.GET:
+        logs = logs.filter(status_code = request.GET.get('status_code'))
+    if 'size_of_response' in request.GET:
+        logs = logs.filter(size_of_response = request.GET.get('size_of_response'))
+
     paginator = Paginator(logs, 50)
 
     page = request.GET.get('page')

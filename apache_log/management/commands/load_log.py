@@ -2,6 +2,7 @@ import re
 
 import requests
 from django.core.management.base import BaseCommand
+from test_task.settings import DEBUG
 
 from apache_log.models import Log
 from datetime import datetime
@@ -20,6 +21,7 @@ class Command(BaseCommand):
             raise Exception(f'Failed on request. Status code: {response.status_code}')
         total_len = int(response.headers['content-length'])
         dl = 0
+        num_lines = 0
         last_line = ''
         for data in response.iter_content(chunk_size=4096):
                 dl += len(data)
@@ -40,6 +42,10 @@ class Command(BaseCommand):
                         log_dict['size_of_response'] = 0 if log_dict['size_of_response'] == '-' else int(log_dict['size_of_response'])
                         log_object = Log(**log_dict)
                         logs_objects += [log_object]
+                num_lines += len(lines)
                 Log.objects.bulk_create(logs_objects)
+                if DEBUG and num_lines > 400:
+                    break
                 done = 100 * dl / total_len
                 print(f'\r[{"=" * int(done/2)}{" " * int(50-done/2)}] {done: .2f}%', flush=True, end='')    
+        print(f'Done. Loaded {num_lines} lines of log', flush=True)
