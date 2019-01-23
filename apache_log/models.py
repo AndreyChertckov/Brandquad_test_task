@@ -4,7 +4,7 @@ from django.db import models
 class Log(models.Model):
     
     ip = models.GenericIPAddressField()
-    data = models.DateTimeField()
+    date = models.DateTimeField()
     http_method = models.CharField(max_length=7)
     uri = models.CharField(max_length=200)
     status_code = models.CharField(max_length=3)
