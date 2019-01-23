@@ -5,8 +5,13 @@ services:
     image: brandquad_test_task
     build: .
     ports:
-      - 8080:8080
+      - 8000:8000
     volumes:
       - .:/app
   db:
     image: postgres
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+
