@@ -9,7 +9,6 @@ FROM python
 #FROM continuumio/miniconda3
 
 LABEL Name=brandquad_test_task Version=0.0.1
-EXPOSE 8080
 
 WORKDIR /app
 ADD . /app

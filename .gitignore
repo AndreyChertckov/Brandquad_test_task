@@ -10,7 +10,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
+dist/js
 downloads/
 eggs/
 .eggs/
@@ -105,3 +105,6 @@ venv.bak/
 
 #vscode
 .vscode/
+
+#frontend
+node_modules

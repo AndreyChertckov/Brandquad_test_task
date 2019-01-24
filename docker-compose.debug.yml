@@ -1,11 +1,9 @@
 version: '2.1'
 
 services:
-  brandquad_test_task:
+  backend:
     image: brandquad_test_task
     build: .
-    ports:
-      - 8000:8000
     volumes:
       - .:/app
   db:
@@ -14,4 +12,7 @@ services:
     image: adminer
     ports:
       - 8080:8080
-
+  frontend:
+    build: ./frontend/
+    ports:
+      - 8000:8000
