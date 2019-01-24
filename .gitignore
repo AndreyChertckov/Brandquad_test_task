@@ -10,7 +10,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/js
+dist/
 downloads/
 eggs/
 .eggs/
@@ -108,3 +108,4 @@ venv.bak/
 
 #frontend
 node_modules
+budle.js
