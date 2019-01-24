@@ -1,52 +1,68 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="col-2">IP</div>
-      <div class="col-3">Start Date</div>
-      <div class="col-3">End Date</div>
-      <div class="col-2">HTTP Method</div>
-    </div>
     <form class="form row">
-      <input
-        class="form-control col-2 search-input"
-        type="text"
-        placeholder="IP"
-        id="ip"
-        v-model="ip"
-      >
-      <input
-        class="form-control col-3 search-input"
-        type="datetime-local"
-        placeholder="Date"
-        id="startDate"
-        v-model="startDate"
-      >
-      <input
-        class="form-control col-3 search-input"
-        type="datetime-local"
-        placeholder="Date"
-        id="endDate"
-        v-model="endDate"
-      >
-      <select
-        class="form-control col-2 search-input"
-        type="text"
-        placeholder="HTTP Method"
-        id="httpMethod"
-        v-model="httpMethod"
-      >
-        <option value>All</option>
-        <option value="GET">GET</option>
-        <option value="POST">POST</option>
-        <option value="HEAD">HEAD</option>
-        <option value="PUT">PUT</option>
-        <option value="DELETE">DELETE</option>
-        <option value="CONNECT">CONNECT</option>
-        <option value="TRACE">TRACE</option>
-        <option value="OPTIONS">OPTIONS</option>
-      </select>
-      <button class="col-1 btn btn-primary" @click="searchRequest">Search</button>
+      <div class="form-group col-5">
+        <label for="ip">IP</label>
+        <br>
+        <input class="form-control search-input" type="text" placeholder="IP" id="ip" v-model="ip">
+      </div>
+      <div class="form-group col-5">
+        <label for="uri">URI</label>
+        <input
+          class="form-control search-input"
+          type="text"
+          placeholder="URI"
+          id="uri"
+          v-model="uri"
+        >
+      </div>
+      <div class="form-group col-5">
+        <label for="startDate">Start date</label>
+        <input
+          class="form-control search-input"
+          type="datetime-local"
+          placeholder="Date"
+          id="startDate"
+          v-model="startDate"
+        >
+      </div>
+      <div class="form-group col-5">
+        <label for="endDate">End Date</label>
+        <input
+          class="form-control search-input"
+          type="datetime-local"
+          placeholder="Date"
+          id="endDate"
+          v-model="endDate"
+        >
+      </div>
+      <div class="form-group col-3">
+        <label for="httpMethod">HTTP method</label>
+        <select
+          class="form-control search-input"
+          type="text"
+          placeholder="HTTP Method"
+          id="httpMethod"
+          v-model="httpMethod"
+        >
+          <option value>All</option>
+          <option value="GET">GET</option>
+          <option value="POST">POST</option>
+          <option value="HEAD">HEAD</option>
+          <option value="PUT">PUT</option>
+          <option value="DELETE">DELETE</option>
+          <option value="CONNECT">CONNECT</option>
+          <option value="TRACE">TRACE</option>
+          <option value="OPTIONS">OPTIONS</option>
+        </select>
+      </div>
+
+      <div class="form-group col-10">
+        <button class="btn btn-primary" @click="searchRequest">Search</button>
+      </div>
     </form>
+    <table-component></table-component>
+    <info-component> </info-component>
   </div>
 </template>
 
@@ -55,24 +71,50 @@
   margin-top: 5%;
 }
 .search-input {
-  padding-right: 4px;
 }
 </style>
 
 <script>
+import TableComponent from "./TableComponent.vue";
+import InfoComponent from "./InfoComponent.vue"
 export default {
+  components: {
+    TableComponent: TableComponent,
+    InfoComponent: InfoComponent,
+  },
   data: function() {
     return {
       ip: "",
       startDate: "",
       endDate: "",
+      statusCode: 0,
+      uri: "",
       httpMethod: "",
-      table: []
+      table: [
+        {
+          ip: "192.168.0.1",
+          date: "utseaohut",
+          http_method: "GET",
+          uri: "asoteuh",
+          status_code: 100,
+          response_size: 100
+        }
+      ],
+      info: {
+        num_distinct_ips: 0,
+        num_distinct_http_methods: 0,
+        sum_response_size: 0,
+        most_common_ips: ["192.168.0.1"]
+      },
+      paging: {
+        current: 2,
+        last: 4,
+        previous: 1,
+        next: 3,
+      } 
     };
   },
-  mounted: function() {
-
-  },
+  mounted: function() {},
   methods: {
     searchRequest: function(event) {
       event.preventDefault();
@@ -88,7 +130,9 @@ export default {
         ipInput.classList.remove("is-invalid");
       }
       this.table = [];
-    }
+      this.loadLogs();
+    },
+    loadLogs: function() {}
   }
 };
 </script>
