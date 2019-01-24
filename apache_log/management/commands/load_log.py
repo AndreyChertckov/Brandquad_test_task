@@ -48,4 +48,4 @@ class Command(BaseCommand):
                     break
                 done = 100 * dl / total_len
                 print(f'\r[{"=" * int(done/2)}{" " * int(50-done/2)}] {done: .2f}%', flush=True, end='')    
-        print(f'Done. Loaded {num_lines} lines of log', flush=True)
+        print(f'\nDone. Loaded {num_lines} lines of log', flush=True)
