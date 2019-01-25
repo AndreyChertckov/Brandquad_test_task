@@ -9,7 +9,7 @@
         <th>Status code</th>
         <th>Size of response</th>
       </tr>
-      <tr v-for="log in this.$parent.table" :key="log['id']">
+      <tr v-for="log in $parent.table" :key="log['id']">
         <td>{{ log['ip'] }}</td>
         <td>{{ log['date'] }}</td>
         <td>{{ log['http_method'] }}</td>
@@ -18,7 +18,8 @@
         <td>{{ log['response_size'] }}</td>
       </tr>
     </table>
-    <div v-if="!this.$parent.table.length" class="offset-5">Loading...</div>
+    <div v-if="(!$parent.table.length) && (!$parent.isNoData)" class="offset-5">Loading...</div>
+    <div v-else-if="$parent.isNoData" class="offset-5">No data avaible.</div>
     <div v-else>
       <nav>
         <ul class="pagination">

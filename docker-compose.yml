@@ -1,10 +1,12 @@
 version: '2.1'
 
 services:
-  brandquad_test_task:
+  backend:
     image: brandquad_test_task
     build: .
-    ports:
-      - 8080:8080
   db:
     image: postgres
+  frontend:
+    build: ./frontend/
+    ports:
+      - 8000:8000

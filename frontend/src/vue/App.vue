@@ -109,11 +109,12 @@ export default {
           response_size: 100
         }
       ],
+      isNoData: false,
       info: {
         num_distinct_ips: 0,
         num_distinct_http_methods: 0,
         sum_response_size: 0,
-        most_common_ips: ["192.168.0.1"]
+        most_common_ips: []
       },
       paging: {
         current: 1,
@@ -160,6 +161,7 @@ export default {
       console.log(queryString);
       this.searchArguments = queryString;
       this.table = [];
+      this.isNoData = false;
       this.loadLogs(-1);
     },
     loadLogs: function(page) {
@@ -176,9 +178,17 @@ export default {
         .then(data => {
           console.log(data);
           this.table = data["logs"];
+          this.isNoData = !this.table.length;
           this.paging.next = data["next"];
           this.paging.last = data["last"];
           this.paging.previous = data["previous"];
+        });
+      this.$http
+        .get("/api/get_info?" + query)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          this.info = data;
         });
     }
   }
