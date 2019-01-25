@@ -4,7 +4,13 @@
       <div class="form-group col-5">
         <label for="ip">IP</label>
         <br>
-        <input class="form-control search-input" type="text" placeholder="IP" id="ip" v-model="ip">
+        <input
+          class="form-control search-input"
+          type="text"
+          placeholder="IP"
+          id="ip"
+          v-model="searching.ip"
+        >
       </div>
       <div class="form-group col-5">
         <label for="uri">URI</label>
@@ -13,7 +19,7 @@
           type="text"
           placeholder="URI"
           id="uri"
-          v-model="uri"
+          v-model="searching.uri"
         >
       </div>
       <div class="form-group col-5">
@@ -23,7 +29,7 @@
           type="datetime-local"
           placeholder="Date"
           id="startDate"
-          v-model="startDate"
+          v-model="searching.start_date"
         >
       </div>
       <div class="form-group col-5">
@@ -33,7 +39,7 @@
           type="datetime-local"
           placeholder="Date"
           id="endDate"
-          v-model="endDate"
+          v-model="searching.end_date"
         >
       </div>
       <div class="form-group col-3">
@@ -43,7 +49,7 @@
           type="text"
           placeholder="HTTP Method"
           id="httpMethod"
-          v-model="httpMethod"
+          v-model="searching.http_method"
         >
           <option value>All</option>
           <option value="GET">GET</option>
@@ -62,7 +68,7 @@
       </div>
     </form>
     <table-component></table-component>
-    <info-component> </info-component>
+    <info-component></info-component>
   </div>
 </template>
 
@@ -70,26 +76,26 @@
 .container {
   margin-top: 5%;
 }
-.search-input {
-}
 </style>
 
 <script>
 import TableComponent from "./TableComponent.vue";
-import InfoComponent from "./InfoComponent.vue"
+import InfoComponent from "./InfoComponent.vue";
 export default {
   components: {
     TableComponent: TableComponent,
-    InfoComponent: InfoComponent,
+    InfoComponent: InfoComponent
   },
   data: function() {
     return {
-      ip: "",
-      startDate: "",
-      endDate: "",
-      statusCode: 0,
-      uri: "",
-      httpMethod: "",
+      searching: {
+        ip: "",
+        start_date: "",
+        end_date: "",
+        status_code: 0,
+        uri: "",
+        http_method: ""
+      },
       table: [
         {
           ip: "192.168.0.1",
@@ -110,8 +116,9 @@ export default {
         current: 2,
         last: 4,
         previous: 1,
-        next: 3,
-      } 
+        next: 3
+      },
+      searchArguments: ""
     };
   },
   mounted: function() {},
@@ -120,19 +127,36 @@ export default {
       event.preventDefault();
       var ipInput = document.getElementById("ip");
       if (
-        this.ip != "" &&
+        this.searching.ip != "" &&
         !/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
-          this.ip
+          this.searching.ip
         )
       ) {
         ipInput.classList.add("is-invalid");
+        return;
       } else if (ipInput.classList.contains("is-invalid")) {
         ipInput.classList.remove("is-invalid");
       }
+      var queryString = Object.keys(this.searching).map(key => {
+        if (this.searching[key]) {
+          return (
+            encodeURIComponent(key) +
+            "=" +
+            encodeURIComponent(this.searching[key])
+          );
+        }
+      });
+      queryString = queryString.filter(function(el) {
+        return el != null;
+      }).join("&");
+      console.log(queryString);
+      this.searchArguments = queryString;
       this.table = [];
       this.loadLogs();
     },
-    loadLogs: function() {}
+    loadLogs: function() {
+      
+    }
   }
 };
 </script>
