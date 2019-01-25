@@ -62,7 +62,10 @@
           <option value="OPTIONS">OPTIONS</option>
         </select>
       </div>
-
+      <div class="form-group col-3">
+        <label for="statusCode">Status code</label>
+        <input type="number" id="statusCode" class="form-control search-input" v-model="searching.status_code">
+      </div>
       <div class="form-group col-10">
         <button class="btn btn-primary" @click="searchRequest">Search</button>
       </div>
@@ -92,7 +95,7 @@ export default {
         ip: "",
         start_date: "",
         end_date: "",
-        status_code: 0,
+        status_code: "",
         uri: "",
         http_method: ""
       },
@@ -113,7 +116,7 @@ export default {
         most_common_ips: ["192.168.0.1"]
       },
       paging: {
-        current: 2,
+        current: 1,
         last: 4,
         previous: 1,
         next: 3
@@ -121,14 +124,17 @@ export default {
       searchArguments: ""
     };
   },
-  mounted: function() {},
+  mounted: function() {
+    this.loadLogs(-1);
+  },
   methods: {
     searchRequest: function(event) {
       event.preventDefault();
       var ipInput = document.getElementById("ip");
+      var reg = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
       if (
         this.searching.ip != "" &&
-        !/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+        !reg.test(
           this.searching.ip
         )
       ) {
@@ -146,16 +152,34 @@ export default {
           );
         }
       });
-      queryString = queryString.filter(function(el) {
-        return el != null;
-      }).join("&");
+      queryString = queryString
+        .filter(function(el) {
+          return el != null;
+        })
+        .join("&");
       console.log(queryString);
       this.searchArguments = queryString;
       this.table = [];
-      this.loadLogs();
+      this.loadLogs(-1);
     },
-    loadLogs: function() {
-      
+    loadLogs: function(page) {
+      var query = this.searchArguments;
+      if (page != -1) {
+        query = "page=" + page + "&" + this.searchArguments;
+        this.paging.current = page;
+      } else {
+        this.paging.current = 1;
+      }
+      this.$http
+        .get("/api/get_page?" + query)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          this.table = data["logs"];
+          this.paging.next = data["next"];
+          this.paging.last = data["last"];
+          this.paging.previous = data["previous"];
+        });
     }
   }
 };

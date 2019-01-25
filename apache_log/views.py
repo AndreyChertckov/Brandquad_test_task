@@ -17,8 +17,10 @@ def search(get_parameters):
         logs = logs.filter(ip=get_parameters.get('ip'))
     if 'http_method' in get_parameters:
         logs = logs.filter(http_method=get_parameters.get('http_method'))
-    if 'date' in get_parameters:
-        logs = logs.filter(date=get_parameters.get('date'))
+    if 'start_date' in get_parameters:
+        logs = logs.filter(date__gte=get_parameters.get('start_date'))
+    if 'end_date' in get_parameters:
+        logs = logs.filter(date__lte=get_parameters.get('end_date'))
     if 'uri' in get_parameters:
         logs = logs.filter(uri=get_parameters.get('uri'))
     if 'status_code' in get_parameters:
@@ -51,7 +53,7 @@ def get_info(request):
     logs = search(request.GET)
     data = dict()
     data['num_distinct_ips'] = logs.distinct('ip').count()
-    data['num_distinct_http_method'] = logs.distinct('http_method').count()
+    data['num_distinct_http_methods'] = logs.distinct('http_method').count()
     data['sum_response_size'] = logs.aggregate(Sum('response_size'))[
         'response_size__sum']
     data['most_common_ips'] = list(map(lambda l: l['ip'], logs.annotate(

@@ -23,27 +23,27 @@
       <nav>
         <ul class="pagination">
           <li class="page-item">
-            <span class="page-link">First</span>
+            <span class="page-link" @click="switchPage(-1)">First</span>
           </li>
-          <li class="page-item">
-            <span class="page-link">{{ this.$parent.paging.previous }}</span>
+          <li class="page-item" v-if="$parent.paging.previous">
+            <span class="page-link" @click="switchPage($parent.paging.previous)">{{ $parent.paging.previous }}</span>
           </li>
           <li class="page-item active">
             <span class="page-link">
-              {{ this.$parent.paging.current }}
+              {{ $parent.paging.current }}
               <span class="sr-only">(current)</span>
             </span>
           </li>
-          <li class="page-item">
-            <span class="page-link">{{ this.$parent.paging.next }}</span>
+          <li class="page-item" v-if="$parent.paging.next">
+            <span class="page-link" @click="switchPage($parent.paging.next)">{{ $parent.paging.next }}</span>
           </li>
           <li class="page-item">
-            <span class="page-link">Last</span>
+            <span class="page-link" @click="switchPage($parent.paging.last)">Last</span>
           </li>
         </ul>
       </nav>
       <div class="offset-10 col-2">
-        <a class="btn btn-primary" href="/api/download_logs">Download logs</a>
+        <a class="btn btn-primary" :href="'/api/download_logs?' + $parent.searchArguments">Download logs</a>
       </div>
     </div>
   </div>
@@ -53,4 +53,11 @@
 </style>
 
 <script>
+export default {
+  methods: {
+    switchPage: function(page_num) {
+      this.$parent.loadLogs(page_num);
+    }
+  }
+}
 </script>
