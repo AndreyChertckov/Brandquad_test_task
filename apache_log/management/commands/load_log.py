@@ -37,6 +37,8 @@ class Command(BaseCommand):
                 for line in lines:
                     if line:
                         r = re.match(r'([(\d\.)]+) - - \[(.*?)\] "(\w+) (.*) .*" (\d+) ([0-9\-]*)',line)
+                        if not r:
+                            continue
                         log_dict = dict(zip(['ip','date','http_method','uri','status_code','response_size'],r.groups()))
                         log_dict['date'] = datetime.strptime(log_dict['date'], '%d/%b/%Y:%H:%M:%S %z')
                         log_dict['response_size'] = 0 if log_dict['response_size'] == '-' else int(log_dict['response_size'])
@@ -47,5 +49,5 @@ class Command(BaseCommand):
                 if DEBUG and num_lines > 400:
                     break
                 done = 100 * dl / total_len
-                print(f'\r[{"=" * int(done/2)}{" " * int(50-done/2)}] {done: .2f}%', flush=True, end='')    
+                print(f'[{"=" * int(done/2)}{" " * int(50-done/2)}] {done: .2f}%                 \n\033[F', flush=True, end='')    
         print(f'\nDone. Loaded {num_lines} lines of log', flush=True)

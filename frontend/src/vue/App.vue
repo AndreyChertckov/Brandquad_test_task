@@ -64,7 +64,12 @@
       </div>
       <div class="form-group col-3">
         <label for="statusCode">Status code</label>
-        <input type="number" id="statusCode" class="form-control search-input" v-model="searching.status_code">
+        <input
+          type="number"
+          id="statusCode"
+          class="form-control search-input"
+          v-model="searching.status_code"
+        >
       </div>
       <div class="form-group col-10">
         <button class="btn btn-primary" @click="searchRequest">Search</button>
@@ -100,32 +105,25 @@ export default {
         http_method: ""
       },
       table: [
-        {
-          ip: "192.168.0.1",
-          date: "utseaohut",
-          http_method: "GET",
-          uri: "asoteuh",
-          status_code: 100,
-          response_size: 100
-        }
       ],
       isNoData: false,
       info: {
-        num_distinct_ips: 0,
-        num_distinct_http_methods: 0,
-        sum_response_size: 0,
+        num_distinct_ips: "Loading...",
+        num_distinct_http_methods: "Loading...",
+        sum_response_size: "Loading...",
         most_common_ips: []
       },
       paging: {
-        current: 1,
-        last: 4,
-        previous: 1,
-        next: 3
+        current: 0,
+        last: 0,
+        previous: 0,
+        next: 0
       },
       searchArguments: ""
     };
   },
   mounted: function() {
+    this.loadInfo();
     this.loadLogs(-1);
   },
   methods: {
@@ -133,12 +131,7 @@ export default {
       event.preventDefault();
       var ipInput = document.getElementById("ip");
       var reg = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-      if (
-        this.searching.ip != "" &&
-        !reg.test(
-          this.searching.ip
-        )
-      ) {
+      if (this.searching.ip != "" && !reg.test(this.searching.ip)) {
         ipInput.classList.add("is-invalid");
         return;
       } else if (ipInput.classList.contains("is-invalid")) {
@@ -162,7 +155,23 @@ export default {
       this.searchArguments = queryString;
       this.table = [];
       this.isNoData = false;
+      this.loadInfo();
       this.loadLogs(-1);
+    },
+    loadInfo: function() {
+      this.info = {
+        num_distinct_ips: "Loading...",
+        num_distinct_http_methods: "Loading...",
+        sum_response_size: "Loading...",
+        most_common_ips: []
+      };
+      this.$http
+        .get("/api/get_info/?" + this.searchArguments)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          this.info = data;
+        });
     },
     loadLogs: function(page) {
       var query = this.searchArguments;
@@ -173,7 +182,7 @@ export default {
         this.paging.current = 1;
       }
       this.$http
-        .get("/api/get_page?" + query)
+        .get("/api/get_page/?" + query)
         .then(response => response.json())
         .then(data => {
           console.log(data);
@@ -182,13 +191,6 @@ export default {
           this.paging.next = data["next"];
           this.paging.last = data["last"];
           this.paging.previous = data["previous"];
-        });
-      this.$http
-        .get("/api/get_info?" + query)
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          this.info = data;
         });
     }
   }
